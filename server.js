@@ -1,6 +1,7 @@
 // Import necessary modules
 const express = require('express');
 const bodyParser = require('body-parser');
+const  mysql = require('mysql2')
 
 // Initialize the Express application
 const app = express();
@@ -99,6 +100,8 @@ app.post('/api/chat', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while processing your request.' });
     }
 });
+
+
 
 // Start the server and listen on the specified port
 app.listen(port, () => {
