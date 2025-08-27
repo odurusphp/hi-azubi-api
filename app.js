@@ -3,18 +3,19 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise');
 const cors = require('cors'); // Import the CORS middleware
+const https = require('https'); // Import the HTTPS module
+const fs = require('fs'); // Import the File System module
 require('dotenv').config(); // Load environment variables from .env file
 
 // Initialize the Express application
 const app = express();
 const port = 4008;
+const httpsPort = 4443; // Choose a different port for HTTPS
 
 // Middleware to parse JSON bodies from incoming requests
 app.use(bodyParser.json());
 
 // Enable CORS for all routes, or specify origins for better security
-// app.use(cors()); 
-// or
 const corsOptions = {
     origin: '*'
 };
@@ -70,9 +71,25 @@ app.get('/api/messages/:user_id', async (req, res) => {
     }
 });
 
+// Load SSL/TLS certificate and key files
+// IMPORTANT: Replace these with the actual paths to your certificate files.
+// For self-signed certificates, you can generate them using OpenSSL.
+const privateKey = fs.readFileSync('./cert/private.key', 'utf8');
+const certificate = fs.readFileSync('./cert/certificate.crt', 'utf8');
+
+const credentials = { key: privateKey, cert: certificate };
+
+// Create an HTTPS server
+const httpsServer = https.createServer(credentials, app);
+
 // Start the server and listen on the specified port
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-    console.log(`To test, send a POST request to http://localhost:${port}/api/chat with a JSON body like:`);
+httpsServer.listen(httpsPort, () => {
+    console.log(`HTTPS Server is running on https://localhost:${httpsPort}`);
+    console.log(`To test, send a POST request to https://localhost:${httpsPort}/api/chat with a JSON body like:`);
     console.log(`{ "message": "What is a performance review?", "user_id": 123 }`);
+});
+
+// Optional: Keep the HTTP server running for development or specific use cases
+app.listen(port, () => {
+    console.log(`HTTP Server is running on http://localhost:${port}`);
 });
