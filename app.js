@@ -61,7 +61,7 @@ app.get('/api/messages/:user_id', async (req, res) => {
         const { user_id } = req.params;
 
         // Fetch user messages from the database
-        const query = 'SELECT * FROM user_messages WHERE user_id = ? LIMIT 1';
+        const query = 'SELECT * FROM user_messages WHERE user_id = ?';
         const [rows] = await pool.execute(query, [user_id]);
 
         res.status(200).json({ messages: rows });
