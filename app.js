@@ -9,8 +9,8 @@ require('dotenv').config(); // Load environment variables from .env file
 
 // Initialize the Express application
 const app = express();
-const port = 4008;
-const httpsPort = 4443; // Choose a different port for HTTPS
+const port = process.env.PORT || 4008;
+//const httpsPort = 4443; // Choose a different port for HTTPS
 
 // Middleware to parse JSON bodies from incoming requests
 app.use(bodyParser.json());
@@ -74,20 +74,20 @@ app.get('/api/messages/:user_id', async (req, res) => {
 // Load SSL/TLS certificate and key files
 // IMPORTANT: Replace these with the actual paths to your certificate files.
 // For self-signed certificates, you can generate them using OpenSSL.
-const privateKey = fs.readFileSync('./cert/private.key', 'utf8');
-const certificate = fs.readFileSync('./cert/certificate.crt', 'utf8');
+// const privateKey = fs.readFileSync('./cert/private.key', 'utf8');
+// const certificate = fs.readFileSync('./cert/certificate.crt', 'utf8');
 
-const credentials = { key: privateKey, cert: certificate };
+// const credentials = { key: privateKey, cert: certificate };
 
-// Create an HTTPS server
-const httpsServer = https.createServer(credentials, app);
+// // Create an HTTPS server
+// const httpsServer = https.createServer(credentials, app);
 
 // Start the server and listen on the specified port
-httpsServer.listen(httpsPort, () => {
-    console.log(`HTTPS Server is running on https://localhost:${httpsPort}`);
-    console.log(`To test, send a POST request to https://localhost:${httpsPort}/api/chat with a JSON body like:`);
-    console.log(`{ "message": "What is a performance review?", "user_id": 123 }`);
-});
+// httpsServer.listen(httpsPort, () => {
+//     console.log(`HTTPS Server is running on https://localhost:${httpsPort}`);
+//     console.log(`To test, send a POST request to https://localhost:${httpsPort}/api/chat with a JSON body like:`);
+//     console.log(`{ "message": "What is a performance review?", "user_id": 123 }`);
+// });
 
 // Optional: Keep the HTTP server running for development or specific use cases
 app.listen(port, () => {
